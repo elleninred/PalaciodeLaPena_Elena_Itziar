@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palacio de la Pena - Actividad Sostenible</title>
+    <!-- Estilos CSS básicos para que se vea bonito y moderno en el móvil -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .mapa-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .lugar-interes {
+            margin-bottom: 15px;
+            background: #fafafa;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        input, button {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #219653;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🌿 Palacio de la Pena</h1>
+        <p style="text-align: center;">Actividad de Sostenibilidad y Digitalización - 2º DAM</p>
+        
+        <hr>
+
+        <!-- SECCIÓN 1: MAPA Y PUNTO DE ENCUENTRO -->
+        <h2>📍 Mapa y Punto de Encuentro</h2>
+        <p><strong>Punto de Encuentro:</strong> Entrada principal de los jardines superiores a las 10:00 AM.</p>
+        
+        <!-- Mapa embebido (Ejemplo con Google Maps de Sintra/Palacio de la Pena) -->
+        <div class="mapa-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3112.9515!2d-9.3906!3d38.7876!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ed107a!2sPalacio%20Nacional%20da%20Pena!5e0!3m2!1ses!2ses!4v1!1m1!1s" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <h3>Lugares de Interés</h3>
+        <div class="lugar-interes">
+            <h4>1. El Patio de los Arcos</h4>
+            <p>Zona central de arquitectura manuelina y morisca.</p>
+        </div>
+        <div class="lugar-interes">
+            <h4>2. El Chalet de la Condesa</h4>
+            <p>Refugio romántico rodeado de jardines botánicos.</p>
+        </div>
+
+        <!-- SECCIÓN 2: FORMULARIO (Nombre del grupo + Foto) -->
+        <form id="formGrupo" onsubmit="enviarFormulario(event)">
+            <h2>📸 Registro de Grupo</h2>
+            
+            <label for="nombreGrupo">Nombre del Grupo:</label>
+            <input type="text" id="nombreGrupo" placeholder="Ej: Los Hackers de DAM" required>
+
+            <label for="fotoGrupo">Subir foto en el lugar:</label>
+            <!-- El atributo 'capture="environment"' hace que en el móvil se abra la cámara directamente -->
+            <input type="file" id="fotoGrupo" accept="image/*" capture="environment" required>
+
+            <button type="submit">Enviar Registro</button>
+        </form>
+    </div>
+
+    <script>
+        function enviarFormulario(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nombreGrupo').value;
+            alert(`¡Genial, ${nombre}! Tu foto y asistencia han sido registradas correctamente de forma digital.`);
+            document.getElementById('formGrupo').reset();
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palacio de la Pena - Actividad Sostenible</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+    <!-- Estilos CSS básicos para que se vea bonito y moderno en el móvil -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        /* ---------- MAPA ---------- */
+        #mapa {
+            width: 100%;
+            height: 320px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            z-index: 0;
+        }
+        .pin {
+            width: 26px;
+            height: 26px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 3px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+        .pin.encuentro { background: #e74c3c; }
+        .pin.palacio { background: #3498db; }
+        .leyenda { font-size: 14px; margin: 0 0 12px; }
+        .btn-mapa {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .btn-mapa:hover { background: #2980b9; }
+ 
+        /* ---------- LUGARES DE INTERÉS ---------- */
+        .lugar-interes {
+            margin-bottom: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            overflow: hidden;
+        }
+        .lugar-interes .foto {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #dfe6e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .lugar-interes .foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .lugar-interes .texto { padding: 4px 12px 12px; }
+        .lugar-interes h4 { margin: 10px 0 4px; }
+        .lugar-interes p { margin: 0; }
+ 
+        /* ---------- FORMULARIO ---------- */
+        .registro {
+            margin-top: 20px;
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .registro iframe {
+            width: 100%;
+            height: 720px;
+            border: 0;
+            border-radius: 6px;
+            background: white;
+        }
+        .aviso {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .btn-form {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-form:hover { background: #219653; }
+    </style>
+</head>
+<body>
+ 
+    <div class="container">
+        <h1>🌿 Palacio de la Pena</h1>
+        <p style="text-align: center;">Actividad de Sostenibilidad y Digitalización - 2º DAM</p>
+ 
+        <hr>
+ 
+        <!-- SECCIÓN 1: MAPA Y PUNTO DE ENCUENTRO -->
+        <h2>📍 Mapa y Punto de Encuentro</h2>
+        <p><strong>Punto de Encuentro:</strong> Entrada principal de los jardines superiores a las 10:00 AM.</p>
+ 
+        <div id="mapa" role="application" aria-label="Mapa con el punto de encuentro y el Palacio de la Pena"></div>
+        <p class="leyenda">🔴 Punto de encuentro &nbsp;&nbsp; 🔵 Palacio de la Pena</p>
+        <a class="btn-mapa" id="comoLlegar" href="#" target="_blank" rel="noopener">Cómo llegar al punto de encuentro</a>
+ 
+        <!-- SECCIÓN 2: LUGARES DE INTERÉS (se generan desde el bloque CONFIG del script) -->
+        <h3>Lugares de Interés</h3>
+        <div id="lugares"></div>
+ 
+        <!-- SECCIÓN 3: FORMULARIO (Nombre del grupo + Fotos) -->
+        <div class="registro">
+            <h2>📸 Registro de Grupo</h2>
+            <div id="contenedorForm"></div>
+        </div>
+    </div>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script>
+        /* =====================================================
+           ZONA PARA EDITAR: cambia solo lo que hay en este bloque
+           ===================================================== */
+        const CONFIG = {
+            palacio: { nombre: "Palacio da Pena", lat: 38.78755, lng: -9.39065 },
+ 
+            // CAMBIAD ESTAS COORDENADAS por las del punto de encuentro real
+            // (Google Maps: clic derecho sobre el sitio -> primera línea = "latitud, longitud")
+            encuentro: {
+                nombre: "Punto de encuentro",
+                lat: 38.7879,
+                lng: -9.3902,
+                descripcion: "Entrada principal de los jardines superiores, 10:00 AM"
+            },
+ 
+            // "foto" = ruta de la imagen dentro de la carpeta img/
+            lugares: [
+                // Cambiad el nombre del archivo por la foto que elijáis (y la extensión: .jpg, .png, .webp...)
+                { nombre: "El Patio de los Arcos",    detalle: "Zona central de arquitectura manuelina y morisca.",  foto: "img/patio-arcos.jpg" },
+                { nombre: "El Chalet de la Condesa",  detalle: "Refugio romántico rodeado de jardines botánicos.",   foto: "img/chalet-condesa1.jpg" },   // alternativa: chalet-condesa2.jpg
+                { nombre: "Fachada del palacio",      detalle: "Con las cúpulas amarilla y roja de fondo.",          foto: "img/palacio1.jpg" },          // alternativas: palacio2 / palacio3 / palacio4
+                { nombre: "Arco del Tritón",          detalle: "El arco decorado sobre la terraza.",                 foto: "img/triton1.jpg" },           // alternativas: triton2 / triton3
+                { nombre: "Cruz Alta",                detalle: "El mirador más alto del parque.",                    foto: "img/cruz-alta.jpg" }          // alternativa: cruz-alta2.jpg
+            ],
+ 
+            // Google Forms: pegad aquí los dos enlaces (ver instrucciones en el chat)
+            formularioEmbed:  "REEMPLAZA-por-el-enlace-de-incrustar",
+            formularioEnlace: "REEMPLAZA-por-el-enlace-normal"
+        };
+        /* ===================================================== */
+ 
+        // ---------- MAPA ----------
+        const p = CONFIG.palacio, e = CONFIG.encuentro;
+        const map = L.map("mapa", { scrollWheelZoom: false });
+ 
+        const capaOSM = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+ 
+        // Si OpenStreetMap bloquea los mosaicos (pasa al abrir el archivo con doble clic),
+        // cambiamos automáticamente a un mapa de respaldo que no lo bloquea.
+        let usandoRespaldo = false;
+        capaOSM.on("tileerror", function () {
+            if (usandoRespaldo) return;
+            usandoRespaldo = true;
+            map.removeLayer(capaOSM);
+            L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+                maxZoom: 19,
+                attribution: "Tiles &copy; Esri"
+            }).addTo(map);
+        });
+ 
+        function pin(tipo) {
+            return L.divIcon({
+                className: "",
+                html: '<div class="pin ' + tipo + '"></div>',
+                iconSize: [26, 26],
+                iconAnchor: [13, 26],
+                popupAnchor: [0, -26]
+            });
+        }
+ 
+        L.marker([p.lat, p.lng], { icon: pin("palacio"), title: p.nombre })
+            .addTo(map).bindPopup("<strong>" + p.nombre + "</strong>");
+        L.marker([e.lat, e.lng], { icon: pin("encuentro"), title: e.nombre })
+            .addTo(map).bindPopup("<strong>" + e.nombre + "</strong><br>" + e.descripcion).openPopup();
+ 
+        map.fitBounds([[p.lat, p.lng], [e.lat, e.lng]], { padding: [50, 50], maxZoom: 17 });
+ 
+        document.getElementById("comoLlegar").href =
+            "https://www.google.com/maps/dir/?api=1&destination=" + e.lat + "," + e.lng;
+ 
+        // ---------- LUGARES DE INTERÉS ----------
+        const contLugares = document.getElementById("lugares");
+        CONFIG.lugares.forEach(function (l, i) {
+            const card = document.createElement("div");
+            card.className = "lugar-interes";
+ 
+            const foto = document.createElement("div");
+            foto.className = "foto";
+            const img = document.createElement("img");
+            img.src = l.foto;
+            img.alt = l.nombre;
+            img.loading = "lazy";
+            // Si la foto todavía no existe, se muestra un aviso en vez de un icono roto
+            img.onerror = function () { img.remove(); foto.textContent = "Foto pendiente"; };
+            foto.appendChild(img);
+ 
+            const texto = document.createElement("div");
+            texto.className = "texto";
+            const h4 = document.createElement("h4");
+            h4.textContent = (i + 1) + ". " + l.nombre;
+            const pp = document.createElement("p");
+            pp.textContent = l.detalle;
+            texto.appendChild(h4);
+            texto.appendChild(pp);
+ 
+            card.appendChild(foto);
+            card.appendChild(texto);
+            contLugares.appendChild(card);
+        });
+ 
+        // ---------- FORMULARIO ----------
+        const contForm = document.getElementById("contenedorForm");
+        if (CONFIG.formularioEmbed.indexOf("REEMPLAZA") === -1) {
+            const iframe = document.createElement("iframe");
+            iframe.src = CONFIG.formularioEmbed;
+            iframe.title = "Formulario de registro del grupo";
+            iframe.loading = "lazy";
+            contForm.appendChild(iframe);
+ 
+            const a = document.createElement("a");
+            a.className = "btn-form";
+            a.href = CONFIG.formularioEnlace;
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.textContent = "Abrir el formulario en otra pestaña";
+            contForm.appendChild(a);
+        } else {
+            contForm.innerHTML = '<div class="aviso">Todavía no se ha conectado el formulario. ' +
+                'Pegad los enlaces de Google Forms en el bloque CONFIG del código.</div>';
+        }
+    </script>
+ 
+</body>
+</html>

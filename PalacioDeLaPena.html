@@ -254,19 +254,18 @@
  
         // ---------- FORMULARIO ----------
         const contForm = document.getElementById("contenedorForm");
-        if (CONFIG.formularioEmbed.indexOf("REEMPLAZA") === -1) {
-            const iframe = document.createElement("iframe");
-            iframe.src = CONFIG.formularioEmbed;
-            iframe.title = "Formulario de registro del grupo";
-            iframe.loading = "lazy";
-            contForm.appendChild(iframe);
+        if (CONFIG.formularioEmbed.indexOf("AQUÍ") === -1) {
+            const texto = document.createElement("p");
+            texto.textContent = "Escribe el nombre de tu grupo y sube las fotos que habéis hecho en cada lugar. " +
+                "Necesitarás iniciar sesión con tu cuenta de Google.";
+            contForm.appendChild(texto);
  
             const a = document.createElement("a");
             a.className = "btn-form";
-            a.href = CONFIG.formularioEnlace;
+            a.href = "https://docs.google.com/forms/d/e/1FAIpQLScaOVGCX1bZmgbnhSWSppdCoN9-sqtYGOVNt2kcomvQzF3-Zw/viewform?usp=header";
             a.target = "_blank";
             a.rel = "noopener";
-            a.textContent = "Abrir el formulario en otra pestaña";
+            a.textContent = "Abrir el formulario de registro";
             contForm.appendChild(a);
         } else {
             contForm.innerHTML = '<div class="aviso">Todavía no se ha conectado el formulario. ' +

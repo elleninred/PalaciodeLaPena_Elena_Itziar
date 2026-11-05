@@ -167,11 +167,11 @@
             // "foto" = ruta de la imagen dentro de la carpeta img/
             lugares: [
                 // Cambiad el nombre del archivo por la foto que elijáis (y la extensión: .jpg, .png, .webp...)
-                { nombre: "El Patio de los Arcos",    detalle: "Zona central de arquitectura manuelina y morisca.",  foto: "img/patio-arcos.jpg" },
-                { nombre: "El Chalet de la Condesa",  detalle: "Refugio romántico rodeado de jardines botánicos.",   foto: "img/chalet-condesa.jpg" },
-                { nombre: "Fachada del palacio",      detalle: "Con las cúpulas amarilla y roja de fondo.",          foto: "img/palacio1.jpg" },          // alternativas: palacio2 
-                { nombre: "Arco del Tritón",          detalle: "El arco decorado sobre la terraza.",                 foto: "img/triton.jpg" },
-                { nombre: "Cruz Alta",                detalle: "El mirador más alto del parque.",                    foto: "img/cruz-alta.jpg" }
+                { nombre: "El Patio de los Arcos",    detalle: "Zona central de arquitectura manuelina y morisca.",  foto: "img/patio-arcos.jpg", qr: "img/qr-patio-arcos.png" },
+                { nombre: "El Chalet de la Condesa",  detalle: "Refugio romántico rodeado de jardines botánicos.",   foto: "img/chalet-condesa.jpg", qr: "img/qr-chalet-condesa.png" },
+                { nombre: "Fachada del palacio",      detalle: "Con las cúpulas amarilla y roja de fondo.",          foto: "img/palacio1.jpg", qr: "img/qr-palacio.png" },          // alternativas: palacio2 
+                { nombre: "Arco del Tritón",          detalle: "El arco decorado sobre la terraza.",                 foto: "img/triton.jpg", qr: "img/qr-triton.png" },
+                { nombre: "Cruz Alta",                detalle: "El mirador más alto del parque.",                    foto: "img/cruz-alta.jpg", qr: "img/qr-cruz-alta.png" }
             ],
  
             // Google Forms: pegad aquí los dos enlaces (ver instrucciones en el chat)
@@ -225,6 +225,18 @@
             // Si la foto todavía no existe, se muestra un aviso en vez de un icono roto
             img.onerror = function () { img.remove(); foto.textContent = "Foto pendiente"; };
             foto.appendChild(img);
+
+            const qr = document.createElement("div");
+            qr.className = "qr";
+            const qrImg = document.createElement("img");
+            qrImg.src = l.qr;
+            qrImg.alt = "Código QR de " + l.nombre;
+            qrImg.loading = "lazy";
+            qrImg.onerror = function () {
+                qrImg.remove();
+                qr.textContent = "Inserta aquí la imagen del código QR";
+            };
+            qr.appendChild(qrImg);
  
             const texto = document.createElement("div");
             texto.className = "texto";

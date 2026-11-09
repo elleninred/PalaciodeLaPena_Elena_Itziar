@@ -118,6 +118,18 @@
             font-weight: bold;
         }
         .btn-form:hover { background: #219653; }
+
+        .qr {
+            padding: 12px;
+            text-align: center;
+        }
+        .qr img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -249,6 +261,7 @@
  
             card.appendChild(foto);
             card.appendChild(texto);
+            card.appendChild(qr)
             contLugares.appendChild(card);
         });
  
